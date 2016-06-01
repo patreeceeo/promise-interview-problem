@@ -28,6 +28,30 @@ describe("Promise", function () {
       expect(lateSpy).toHaveBeenCalledWith(tweets);
     });
   });
+
+  describe("#all", function () {
+    var fetchTweets, fetchTweetsAgain, tweets, moreTweets;
+
+    beforeEach(function () {
+      fetchTweets = new Promise();
+      fetchTweetsAgain = new Promise();
+      tweets = { fake: "data" };
+      moreTweets = { data: "fake" };
+    });
+
+    it("creates a new promise that resolves when all the argued promises have resolved", function (done) {
+      var spy = jasmine.createSpy("done");
+      Promise.all(fetchTweets, fetchTweetsAgain).done(spy);
+      setTimeout(function () {
+        fetchTweets.resolve(tweets);
+      });
+      setTimeout(function () {
+        fetchTweetsAgain.resolve(moreTweets);
+        done();
+      }, 2);
+      expect(spy).toHaveBeenCalledWith(tweets, moreTweets);
+    });
+  });
 });
 
 
